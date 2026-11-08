@@ -13,20 +13,22 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #1d3a2c;
+  background: #0b0f1e;
 }
 
 body {
-  display: block;
+  display: grid;
+  place-items: center;
 }
 
-/* 铺满视口，按实际屏幕自适应 */
+/* 设计稿宽高比 750:1624 —— 游戏整屏铺满 */
 .phone {
+  --pw: 750;
+  --ph: 1624;
   position: relative;
-  width: 100vw;
-  width: 100dvw;
-  height: 100vh;
-  height: 100dvh;
+  flex: none;
+  width: min(100vw, calc(100dvh * var(--pw) / var(--ph)));
+  height: min(100dvh, calc(100vw * var(--ph) / var(--pw)));
   background: #1d3a2c;
   overflow: hidden;
 }
@@ -39,11 +41,19 @@ body {
   border: 0;
   background: #1d3a2c;
 }
+
+@media (max-aspect-ratio: 750/1624) and (orientation: portrait) {
+  html, body { background: #1d3a2c; }
+  .phone {
+    width: 100vw;
+    height: 100dvh;
+  }
+}
 </style>
 </head>
 <body>
 <div class="phone" id="phone" aria-label="节节高">
-  <iframe src="game.html?v=lite5" title="节节高"></iframe>
+  <iframe src="game.html?v=lite6" title="节节高"></iframe>
 </div>
 </body>
 </html>
