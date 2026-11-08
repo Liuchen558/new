@@ -976,18 +976,18 @@ svg { display: block; }
 .sm-lock { top: calc(var(--v) * 252); left: calc(var(--v) * 520); width: calc(var(--v) * 280); text-align: right; font-size: calc(var(--v) * 28); font-weight: 800; color: #9a7440; pointer-events: none; }
 .sm-lock.p2 { top: calc(var(--v) * 678); }
 
-/* 真人对决：两个座位（放大，方便看清头像和名字） */
+/* 真人对决：两个座位 */
 .sm-seats { display: contents; }
-.sm-seat { position: absolute; top: calc(var(--v) * 158); height: calc(var(--v) * 92); width: calc(var(--v) * 360); display: flex; align-items: center; gap: calc(var(--v) * 12); padding: 0 calc(var(--v) * 16) 0 calc(var(--v) * 8); border-radius: calc(var(--v) * 46); background: rgba(255, 250, 232, .95); box-shadow: 0 calc(var(--v) * 5) 0 rgba(120, 80, 20, .3); overflow: hidden; --ring: var(--or-2); }
-.sm-seat.host { left: calc(var(--v) * 36); }
-.sm-seat.guest { left: calc(var(--v) * 430); --ring: var(--bl-2); }
-.sm-seat .ava { flex: none; width: calc(var(--v) * 72); height: calc(var(--v) * 72); border-width: calc(var(--v) * 3); font-size: calc(var(--v) * 34); box-shadow: 0 0 0 calc(var(--v) * 4) var(--ring); animation: none; }
+.sm-seat { position: absolute; top: calc(var(--v) * 178); height: calc(var(--v) * 50); width: calc(var(--v) * 238); display: flex; align-items: center; gap: calc(var(--v) * 8); padding: 0 calc(var(--v) * 12) 0 calc(var(--v) * 5); border-radius: calc(var(--v) * 25); background: rgba(255, 250, 232, .9); box-shadow: 0 calc(var(--v) * 4) 0 rgba(120, 80, 20, .3); overflow: hidden; --ring: var(--or-2); }
+.sm-seat.host { left: calc(var(--v) * 30); }
+.sm-seat.guest { left: calc(var(--v) * 278); --ring: var(--bl-2); }
+.sm-seat .ava { flex: none; width: calc(var(--v) * 40); height: calc(var(--v) * 40); border-width: calc(var(--v) * 2); font-size: calc(var(--v) * 22); box-shadow: 0 0 0 calc(var(--v) * 3) var(--ring); animation: none; }
 .sm-seat .ava svg { width: 70%; height: 70%; }
-.sm-seat .ava.empty { font-size: calc(var(--v) * 40); background: rgba(0, 0, 0, .06); border: calc(var(--v) * 3) dashed #b99a68; color: #b99a68; box-shadow: none; }
-.sm-seat i { flex: none; font-style: normal; font-size: calc(var(--v) * 28); font-weight: 800; color: #fff; padding: calc(var(--v) * 4) calc(var(--v) * 12); border-radius: calc(var(--v) * 16); background: var(--ring); }
-.sm-seat b { min-width: 0; font-size: calc(var(--v) * 34); color: #5a3215; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sm-seat .ava.empty { font-size: calc(var(--v) * 26); background: rgba(0, 0, 0, .06); border: calc(var(--v) * 2) dashed #b99a68; color: #b99a68; box-shadow: none; }
+.sm-seat i { flex: none; font-style: normal; font-size: calc(var(--v) * 20); font-weight: 800; color: #fff; padding: calc(var(--v) * 2) calc(var(--v) * 8); border-radius: calc(var(--v) * 12); background: var(--ring); }
+.sm-seat b { min-width: 0; font-size: calc(var(--v) * 24); color: #5a3215; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sm-seat.empty b { color: #a58b60; font-weight: 600; }
-.sm-seat.me { box-shadow: 0 0 0 calc(var(--v) * 5) #ffe27a, 0 calc(var(--v) * 5) 0 rgba(120, 80, 20, .3); }
+.sm-seat.me { box-shadow: 0 0 0 calc(var(--v) * 4) #ffe27a, 0 calc(var(--v) * 4) 0 rgba(120, 80, 20, .3); }
 
 /* 劈什么：四张主题卡（卡片底板是设计图里的原样，选中 / 未选中各一张） */
 .sm-tiles { display: contents; }
@@ -1084,6 +1084,6 @@ svg { display: block; }
     <button type="button" class="tap-half" data-side="R" aria-label="右侧出刀"></button>
   </div>
   <main id="app" class="app"></main>
-  <script type="module" src="assets/main.js?v=lite4"></script>
+  <script type="module" src="assets/main.js?v=lite5"></script>
 </body>
 </html>
