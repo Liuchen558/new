@@ -19,13 +19,13 @@ export function createSegment(branch: Branch = "none"): Segment {
   return { id: nextId++, branch }
 }
 
-export function createInitialStack(config: DifficultyConfig, count = 10): Segment[] {
+export function createInitialStack(config: DifficultyConfig, count = 12): Segment[] {
   const stack: Segment[] = []
   let prev: Branch = "none"
   for (let i = 0; i < count; i++) {
-    // Keep the first few segments clear so the player can start safely
+    // Keep the first few segments clear so the opening chops are always safe
     const branch: Branch =
-      i < 2 ? "none" : randomBranch(config.branchDensity * (i < 4 ? 0.5 : 1), prev)
+      i < 4 ? "none" : randomBranch(config.branchDensity * (i < 6 ? 0.55 : 1), prev)
     stack.push(createSegment(branch))
     if (branch !== "none") prev = branch
   }
@@ -54,7 +54,7 @@ export function chop(
     return { ok: false, died: true, reason: "branch", segments, side, score, combo: 0 }
   }
 
-  // Hitting a branch on the side you chop from = death
+  // Chopping into a branch on your side = death (score does not count this swing)
   if (current.branch === side) {
     return {
       ok: false,
@@ -69,17 +69,14 @@ export function chop(
 
   const next = segments.slice(1)
   const last = next[next.length - 1]
-  const prefer = Math.random() < config.sideSwap ? (side === "left" ? "right" : "left") : "none"
-  next.push(
-    createSegment(
-      randomBranch(config.branchDensity, prefer === "none" ? last?.branch ?? "none" : prefer),
-    ),
-  )
+  const preferOpposite = Math.random() < config.sideSwap
+  const prefer: Branch = preferOpposite ? (side === "left" ? "right" : "left") : last?.branch ?? "none"
+  next.push(createSegment(randomBranch(config.branchDensity, prefer)))
 
   const newScore = score + 1
   const newCombo = combo + 1
 
-  // After the tree drops, a branch on your current side is fatal
+  // After the tree drops, a branch on your standing side is fatal
   if (next[0]?.branch === side) {
     return {
       ok: true,
@@ -107,7 +104,6 @@ export function simulateAiScore(
   config: DifficultyConfig,
   playerDied: boolean,
 ): number {
-  // AI chops at a steady rate with a small random miss buffer
   const chops = (elapsedMs / 1000) * config.aiKnivesPerSec
   const efficiency = playerDied ? 0.92 : 0.88
   return Math.max(0, Math.floor(chops * efficiency))

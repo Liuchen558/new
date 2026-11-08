@@ -25,18 +25,31 @@ export function GameScreen({ settings, showTutorial, onSkipTutorial, onEnd, onBa
   const [countdown, setCountdown] = useState(showTutorial ? 0 : 3)
   const [hintSide, setHintSide] = useState<Side | null>(null)
   const [tutorialStep, setTutorialStep] = useState(1)
-  const startedAt = useRef(Date.now())
+  const [started, setStarted] = useState(false)
+
+  const startedAt = useRef(0)
   const alive = useRef(true)
+  const ended = useRef(false)
   const scoreRef = useRef(0)
   const comboRef = useRef(0)
   const maxComboRef = useRef(0)
-  const sideRef = useRef<Side>("left")
   const segmentsRef = useRef(segments)
   const timeRef = useRef(1)
+  const startedRef = useRef(false)
+  const onEndRef = useRef(onEnd)
+  const configRef = useRef(config)
 
   useEffect(() => {
     segmentsRef.current = segments
   }, [segments])
+
+  useEffect(() => {
+    onEndRef.current = onEnd
+  }, [onEnd])
+
+  useEffect(() => {
+    configRef.current = config
+  }, [config])
 
   // Countdown before play (non-tutorial)
   useEffect(() => {
@@ -45,7 +58,7 @@ export function GameScreen({ settings, showTutorial, onSkipTutorial, onEnd, onBa
     return () => window.clearTimeout(t)
   }, [countdown, showTutorial])
 
-  // Update hint for tutorial / tip
+  // Hint which side to tap when the next segment has a branch
   useEffect(() => {
     const danger = segments[0]?.branch
     if (danger === "left") setHintSide("right")
@@ -53,42 +66,53 @@ export function GameScreen({ settings, showTutorial, onSkipTutorial, onEnd, onBa
     else setHintSide(null)
   }, [segments])
 
-  // Time drain + AI score tick
+  // Energy drain + AI score — only after the player’s first chop
   useEffect(() => {
-    if (showTutorial || countdown > 0) return
-    startedAt.current = Date.now()
-    const id = window.setInterval(() => {
-      if (!alive.current) return
-      const elapsed = Date.now() - startedAt.current
-      setAiScore(simulateAiScore(elapsed, config, false))
+    if (showTutorial || countdown > 0 || !started) return
 
-      timeRef.current = Math.max(0, timeRef.current - config.timeDrain * 0.05)
+    const id = window.setInterval(() => {
+      if (!alive.current || ended.current) return
+      const cfg = configRef.current
+      const elapsed = Date.now() - startedAt.current
+      setAiScore(simulateAiScore(elapsed, cfg, false))
+
+      timeRef.current = Math.max(0, timeRef.current - cfg.timeDrainPerSec * 0.05)
       setTimeLeft(timeRef.current)
       if (timeRef.current <= 0) {
-        alive.current = false
         finish("timeout")
       }
     }, 50)
+
     return () => window.clearInterval(id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showTutorial, countdown, settings.difficulty])
+  }, [showTutorial, countdown, started, settings.difficulty])
 
   function finish(reason: MatchResult["reason"]) {
-    const elapsed = Date.now() - startedAt.current
-    const finalAi = simulateAiScore(elapsed, config, true)
-    onEnd({
+    if (ended.current) return
+    ended.current = true
+    alive.current = false
+    const cfg = configRef.current
+    const elapsed = startedAt.current ? Date.now() - startedAt.current : 0
+    const finalAi = simulateAiScore(elapsed, cfg, true)
+    onEndRef.current({
       playerScore: scoreRef.current,
       aiScore: finalAi,
       maxCombo: maxComboRef.current,
       durationMs: elapsed,
       reason,
       settings,
-      difficultyLabel: config.label,
+      difficultyLabel: cfg.label,
     })
   }
 
+  function beginRun() {
+    if (startedRef.current) return
+    startedRef.current = true
+    startedAt.current = Date.now()
+    setStarted(true)
+  }
+
   function handleChop(nextSide: Side) {
-    if (!alive.current) return
+    if (!alive.current || ended.current) return
     if (!showTutorial && countdown > 0) return
 
     const result = chop(
@@ -96,8 +120,12 @@ export function GameScreen({ settings, showTutorial, onSkipTutorial, onEnd, onBa
       nextSide,
       scoreRef.current,
       comboRef.current,
-      config,
+      configRef.current,
     )
+
+    if (result.ok || result.died) {
+      beginRun()
+    }
 
     setChopping(true)
     window.setTimeout(() => setChopping(false), 120)
@@ -105,7 +133,6 @@ export function GameScreen({ settings, showTutorial, onSkipTutorial, onEnd, onBa
     setSegments(result.segments)
     segmentsRef.current = result.segments
     setSide(result.side)
-    sideRef.current = result.side
     setScore(result.score)
     scoreRef.current = result.score
     setCombo(result.combo)
@@ -116,12 +143,11 @@ export function GameScreen({ settings, showTutorial, onSkipTutorial, onEnd, onBa
     }
 
     if (result.ok) {
-      timeRef.current = Math.min(1, timeRef.current + config.chopBonus)
+      timeRef.current = Math.min(1, timeRef.current + configRef.current.chopBonus)
       setTimeLeft(timeRef.current)
       if (showTutorial) {
         setTutorialStep((s) => Math.min(7, s + 1))
         if (result.score >= 7) {
-          alive.current = false
           onSkipTutorial()
           return
         }
@@ -129,21 +155,21 @@ export function GameScreen({ settings, showTutorial, onSkipTutorial, onEnd, onBa
     }
 
     if (result.died) {
-      alive.current = false
       if (showTutorial) {
-        // Soft reset during tutorial
-        const fresh = createInitialStack(config)
+        const fresh = createInitialStack(configRef.current)
         setSegments(fresh)
         segmentsRef.current = fresh
         setSide("left")
-        sideRef.current = "left"
         setScore(0)
         scoreRef.current = 0
         setCombo(0)
         comboRef.current = 0
         alive.current = true
+        ended.current = false
         timeRef.current = 1
         setTimeLeft(1)
+        startedRef.current = false
+        setStarted(false)
         return
       }
       finish("branch")
@@ -166,6 +192,8 @@ export function GameScreen({ settings, showTutorial, onSkipTutorial, onEnd, onBa
           ? "竹枝在左边，快点右边！"
           : "头顶上方的竹枝在哪边就点另一边出刀！"
 
+  const waitingToStart = !showTutorial && countdown <= 0 && !started
+
   return (
     <div className="relative flex h-full flex-col">
       <ForestBackground />
@@ -187,7 +215,6 @@ export function GameScreen({ settings, showTutorial, onSkipTutorial, onEnd, onBa
         </div>
       </div>
 
-      {/* Time bar */}
       <div className="relative z-10 mx-4 mt-2 h-2.5 overflow-hidden rounded-full bg-black/25">
         <div
           className="h-full rounded-full transition-[width] duration-75"
@@ -201,7 +228,7 @@ export function GameScreen({ settings, showTutorial, onSkipTutorial, onEnd, onBa
         />
       </div>
 
-      {(showTutorial || hintSide) && (
+      {(showTutorial || (hintSide && started)) && (
         <div className="relative z-20 mx-4 mt-3 rounded-2xl bg-white/92 px-3 py-2.5 shadow-lg backdrop-blur">
           <div className="mb-1 flex items-center justify-between">
             <span className="text-xs font-bold text-[var(--player)]">
@@ -221,8 +248,7 @@ export function GameScreen({ settings, showTutorial, onSkipTutorial, onEnd, onBa
       )}
 
       <div className="relative z-10 min-h-0 flex-1 touch-none select-none" onPointerDown={onPointer}>
-        {/* Side hints */}
-        {hintSide && (
+        {hintSide && started && (
           <>
             <div
               className={`pointer-events-none absolute inset-y-0 left-0 w-1/2 ${hintSide === "left" ? "animate-hint bg-white/10" : ""}`}
@@ -247,10 +273,18 @@ export function GameScreen({ settings, showTutorial, onSkipTutorial, onEnd, onBa
         />
 
         {!showTutorial && countdown > 0 && (
-          <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/20 backdrop-blur-[1px]">
+          <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-black/20 backdrop-blur-[1px]">
             <div className="animate-score-pop font-display text-8xl text-white drop-shadow-lg">
               {countdown}
             </div>
+          </div>
+        )}
+
+        {waitingToStart && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-16 z-20 text-center">
+            <span className="rounded-full bg-black/35 px-4 py-2 text-sm font-bold text-white backdrop-blur">
+              点左或右半屏开始劈砍
+            </span>
           </div>
         )}
       </div>

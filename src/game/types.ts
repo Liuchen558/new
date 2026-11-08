@@ -16,7 +16,9 @@ export interface DifficultyConfig {
   sideSwap: number
   hitWindow: number
   aiKnivesPerSec: number
-  timeDrain: number
+  /** Fraction of the energy bar drained per second while playing */
+  timeDrainPerSec: number
+  /** Fraction restored on each successful chop */
   chopBonus: number
 }
 
@@ -60,7 +62,9 @@ export function getDifficulty(value: number): DifficultyConfig {
     sideSwap: 0.25 + t * 0.5,
     hitWindow: 0.95 - t * 0.45,
     aiKnivesPerSec: 2.2 + t * 5.2,
-    timeDrain: 0.11 + t * 0.16,
-    chopBonus: 0.16 - t * 0.05,
+    // Idle survival ~12s (easy) → ~6s (hard) without chopping
+    timeDrainPerSec: 0.08 + t * 0.08,
+    // Each chop restores a solid chunk so steady play stays alive
+    chopBonus: 0.22 - t * 0.06,
   }
 }
