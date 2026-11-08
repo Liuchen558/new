@@ -1,18 +1,82 @@
 <!doctype html>
-<html>
+<html lang="zh-CN">
 <head>
-<meta charset=utf8>
-<meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#1d3a2c" />
 <title>节节高</title>
 <style>
-html, body { margin: 0; height: 100%; background: #0b0f1e; overflow: hidden; }
-body { display: flex; align-items: center; justify-content: center; }
-.phone { position: relative; flex: none; height: 100vh; height: 100dvh; width: min(100vw, calc(100vh * 9 / 16)); container-type: inline-size; background: #000; overflow: hidden; }
-.phone iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #1d3a2c; }
+/*
+  红框范围 = 整块手机界面（.phone）
+  内含：互动房顶栏 + 游戏 iframe + 互动房底栏
+*/
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0b0f1e;
+}
+
+body {
+  display: grid;
+  place-items: center;
+}
+
+/* 手机界面：固定 9:16，完整装下红框内容 */
+.phone {
+  position: relative;
+  flex: none;
+  width: min(100vw, calc(100vh * 9 / 16));
+  height: min(100vh, calc(100vw * 16 / 9));
+  width: min(100vw, calc(100dvh * 9 / 16));
+  height: min(100dvh, calc(100vw * 16 / 9));
+  container-type: inline-size;
+  background: #1d3a2c;
+  overflow: hidden;
+}
+
+.phone iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #1d3a2c;
+}
+
+/* 真机竖屏：手机界面铺满屏幕 */
+@media (max-width: 480px) and (orientation: portrait) {
+  html, body { background: #1d3a2c; }
+  .phone {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+  }
+}
+
 /* 互动房顶部 / 底部组件占位（仅演示版）。坐标单位：750 设计宽度的像素，--ru = 当前页面宽度 / 750。 */
-.room-top, .room-bottom { --ru: calc(100cqw / 750); position: absolute; left: 0; right: 0; overflow: hidden; pointer-events: none; z-index: 5; }
-.room-top { top: 0; height: calc((322 + var(--rx, 0)) * var(--ru)); background: linear-gradient(180deg, rgba(var(--rt, 30, 70, 44), .92) 0%, rgba(var(--rt, 30, 70, 44), .86) 58%, rgba(var(--rt, 30, 70, 44), .5) 88%, rgba(var(--rt, 30, 70, 44), 0) 100%); }
-.room-bottom { bottom: 0; height: calc((80 + var(--rx, 0) * 0.6) * var(--ru)); background: linear-gradient(0deg, rgba(var(--rb, 30, 70, 44), .92) 0%, rgba(var(--rb, 30, 70, 44), .8) 70%, rgba(var(--rb, 30, 70, 44), 0) 100%); }
+.room-top, .room-bottom {
+  --ru: calc(100cqw / 750);
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
+}
+.room-top {
+  top: 0;
+  height: calc((322 + var(--rx, 0)) * var(--ru));
+  background: linear-gradient(180deg, rgba(var(--rt, 30, 70, 44), .92) 0%, rgba(var(--rt, 30, 70, 44), .86) 58%, rgba(var(--rt, 30, 70, 44), .5) 88%, rgba(var(--rt, 30, 70, 44), 0) 100%);
+}
+.room-bottom {
+  bottom: 0;
+  height: calc((80 + var(--rx, 0) * 0.6) * var(--ru));
+  background: linear-gradient(0deg, rgba(var(--rb, 30, 70, 44), .92) 0%, rgba(var(--rb, 30, 70, 44), .8) 70%, rgba(var(--rb, 30, 70, 44), 0) 100%);
+}
 .rm { position: absolute; inset: 0; color: #e9edff; font-family: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, sans-serif; }
 .rm * { box-sizing: border-box; }
 .rm > *, .rm-nav > *, .rm-chips > *, .rm-seats > *, .rm-tools > * { position: absolute; }
@@ -71,38 +135,41 @@ body { display: flex; align-items: center; justify-content: center; }
 .rm-bottom .sel { left: calc(413 * var(--ru)); top: calc(18 * var(--ru)); width: calc(60 * var(--ru)); height: calc(60 * var(--ru)); border-radius: 50%; background: #f6d94a; color: #1a1a1a; text-align: center; line-height: calc(60 * var(--ru)); font-size: calc(19 * var(--ru)); font-weight: 800; position: absolute; }
 .rm-bottom i.b3 { left: calc(498 * var(--ru)); background: rgba(255, 255, 255, .85); } .rm-bottom i.b4 { left: calc(575 * var(--ru)); }
 .rm-bottom i.b5 { left: calc(654 * var(--ru)); border-radius: calc(14 * var(--ru)); background: linear-gradient(180deg, #ff7a8a, #e0405a); }
-
 </style>
 </head>
 <body>
-<div class="phone">
-<iframe src="game.html?v=mw7kbs5h" title="节节高"></iframe>
-<div class="room-top"><div class="rm rm-top">
-  <div class="rm-status"><b>14:47</b><span class="rm-sys"><i class="rm-sig"></i><i class="rm-wifi"></i><em>73</em></span></div>
-  <div class="rm-nav">
-    <span class="rm-back">‹</span>
-    <div class="rm-title"><b><i class="rm-lock"></i>哈哈哈哈哈</b><small>热度: 10 · 房间号: 10369660</small></div>
-    <span class="rm-play">趣味玩法 ▾</span>
-    <i class="rm-ic i1"></i><i class="rm-ic i2"></i><i class="rm-ic i3"></i>
-  </div>
-  <div class="rm-chips">
-    <span class="g"><i></i>找人玩</span><span>公告</span><span>选择音乐</span>
-    <span class="r1">虚位以待 ›</span><span class="r2">●1</span>
-  </div>
-  <div class="rm-seats"><i class="host"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-</div></div>
-<div class="room-bottom"><div class="rm rm-bottom">
-  <i class="b1"></i><i class="b2"></i>
-  <span class="sel">选择</span>
-  <i class="b3"></i><i class="b4"></i><i class="b5"></i>
-</div></div>
+<!-- 手机界面（红框）：互动房壳 + 游戏 -->
+<div class="phone" id="phone" aria-label="手机界面">
+  <iframe src="game.html?v=mw7kbs5h" title="节节高"></iframe>
+
+  <div class="room-top"><div class="rm rm-top">
+    <div class="rm-status"><b>14:47</b><span class="rm-sys"><i class="rm-sig"></i><i class="rm-wifi"></i><em>73</em></span></div>
+    <div class="rm-nav">
+      <span class="rm-back">‹</span>
+      <div class="rm-title"><b><i class="rm-lock"></i>哈哈哈哈哈</b><small>热度: 10 · 房间号: 10369660</small></div>
+      <span class="rm-play">趣味玩法 ▾</span>
+      <i class="rm-ic i1"></i><i class="rm-ic i2"></i><i class="rm-ic i3"></i>
+    </div>
+    <div class="rm-chips">
+      <span class="g"><i></i>找人玩</span><span>公告</span><span>选择音乐</span>
+      <span class="r1">虚位以待 ›</span><span class="r2">●1</span>
+    </div>
+    <div class="rm-seats"><i class="host"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div></div>
+
+  <div class="room-bottom"><div class="rm rm-bottom">
+    <i class="b1"></i><i class="b2"></i>
+    <span class="sel">选择</span>
+    <i class="b3"></i><i class="b4"></i><i class="b5"></i>
+  </div></div>
 </div>
+
 <script>
 // 游戏页会把当前界面最上 / 最下的底色发过来，顶部 / 底部组件的底色按它渐变
 window.addEventListener("message", (e) => {
   const d = e.data;
   if (!d || d.type !== "jjg-edge") return;
-  const p = document.querySelector(".phone");
+  const p = document.getElementById("phone");
   p.style.setProperty("--rt", d.top);
   p.style.setProperty("--rb", d.bottom);
   p.style.setProperty("--rx", d.ext || 0);
