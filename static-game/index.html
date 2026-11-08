@@ -8,11 +8,6 @@
 <meta name="theme-color" content="#1d3a2c" />
 <title>节节高</title>
 <style>
-/*
-  手机界面（.phone）= 游戏整屏
-  尺寸按游戏设计稿 750×1624（art/bg），在视口内尽量铺满并保持比例
-  内含：互动房顶栏 + 游戏 iframe + 互动房底栏
-*/
 html, body {
   margin: 0;
   width: 100%;
@@ -26,17 +21,14 @@ body {
   place-items: center;
 }
 
-/* 设计稿宽高比 750:1624 —— 用这个比例，游戏 UI 才能横向铺满 */
+/* 设计稿宽高比 750:1624 —— 游戏整屏铺满 */
 .phone {
   --pw: 750;
   --ph: 1624;
   position: relative;
   flex: none;
-  width: min(100vw, calc(100vh * var(--pw) / var(--ph)));
-  height: min(100vh, calc(100vw * var(--ph) / var(--pw)));
   width: min(100vw, calc(100dvh * var(--pw) / var(--ph)));
   height: min(100dvh, calc(100vw * var(--ph) / var(--pw)));
-  container-type: inline-size;
   background: #1d3a2c;
   overflow: hidden;
 }
@@ -50,145 +42,18 @@ body {
   background: #1d3a2c;
 }
 
-/* 视口已接近设计稿比例时，直接铺满（常见真机） */
 @media (max-aspect-ratio: 750/1624) and (orientation: portrait) {
   html, body { background: #1d3a2c; }
   .phone {
     width: 100vw;
-    height: 100vh;
     height: 100dvh;
   }
 }
-
-/* 互动房顶部 / 底部组件占位（仅演示版）。坐标单位：750 设计宽度的像素，--ru = 当前页面宽度 / 750。 */
-.room-top, .room-bottom {
-  --ru: calc(100cqw / 750);
-  position: absolute;
-  left: 0;
-  right: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 5;
-}
-.room-top {
-  top: 0;
-  height: calc((322 + var(--rx, 0)) * var(--ru));
-  background: linear-gradient(180deg, rgba(var(--rt, 30, 70, 44), .92) 0%, rgba(var(--rt, 30, 70, 44), .86) 58%, rgba(var(--rt, 30, 70, 44), .5) 88%, rgba(var(--rt, 30, 70, 44), 0) 100%);
-}
-.room-bottom {
-  bottom: 0;
-  height: calc((80 + var(--rx, 0) * 0.6) * var(--ru));
-  background: linear-gradient(0deg, rgba(var(--rb, 30, 70, 44), .92) 0%, rgba(var(--rb, 30, 70, 44), .8) 70%, rgba(var(--rb, 30, 70, 44), 0) 100%);
-}
-.rm { position: absolute; inset: 0; color: #e9edff; font-family: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, sans-serif; }
-.rm * { box-sizing: border-box; }
-.rm > *, .rm-nav > *, .rm-chips > *, .rm-seats > *, .rm-tools > * { position: absolute; }
-.rm-note { left: 0; right: 0; bottom: calc(6 * var(--ru)); text-align: center; font-size: calc(15 * var(--ru)); color: rgba(255, 255, 255, .38); letter-spacing: .05em; }
-
-/* 状态栏 */
-.rm-status { left: 0; right: 0; top: 0; height: calc(88 * var(--ru)); }
-.rm-status b { position: absolute; left: calc(87 * var(--ru)); top: calc(38 * var(--ru)); font-size: calc(30 * var(--ru)); font-weight: 700; }
-.rm-sys { position: absolute; right: calc(34 * var(--ru)); top: calc(40 * var(--ru)); display: flex; gap: calc(14 * var(--ru)); align-items: center; }
-.rm-sig { width: calc(34 * var(--ru)); height: calc(20 * var(--ru)); background: repeating-linear-gradient(90deg, #fff 0 calc(5 * var(--ru)), transparent calc(5 * var(--ru)) calc(8 * var(--ru))); clip-path: polygon(0 100%, 100% 100%, 100% 0); }
-.rm-wifi { width: calc(24 * var(--ru)); height: calc(18 * var(--ru)); border: calc(4 * var(--ru)) solid #fff; border-bottom-color: transparent; border-radius: 50% 50% 0 0; }
-.rm-sys em { font-style: normal; font-size: calc(20 * var(--ru)); font-weight: 800; color: #14224c; background: #fff; border-radius: calc(7 * var(--ru)); padding: 0 calc(10 * var(--ru)); line-height: calc(26 * var(--ru)); }
-
-/* 房间信息栏 */
-.rm-nav { left: 0; right: 0; top: calc(78 * var(--ru)); height: calc(70 * var(--ru)); }
-.rm-back { left: calc(20 * var(--ru)); top: calc(10 * var(--ru)); font-size: calc(54 * var(--ru)); line-height: 1; color: #fff; }
-.rm-title { left: calc(57 * var(--ru)); top: calc(6 * var(--ru)); }
-.rm-title b { display: flex; align-items: center; gap: calc(8 * var(--ru)); font-size: calc(25 * var(--ru)); white-space: nowrap; }
-.rm-title small { display: block; margin-top: calc(6 * var(--ru)); font-size: calc(17 * var(--ru)); color: rgba(255, 255, 255, .62); white-space: nowrap; }
-.rm-lock { width: calc(20 * var(--ru)); height: calc(16 * var(--ru)); background: #fff; border-radius: calc(4 * var(--ru)); }
-.rm-play { left: calc(344 * var(--ru)); top: calc(10 * var(--ru)); height: calc(40 * var(--ru)); line-height: calc(40 * var(--ru)); padding: 0 calc(18 * var(--ru)); border-radius: calc(20 * var(--ru)); background: #f6d94a; color: #1a1a1a; font-size: calc(20 * var(--ru)); font-weight: 800; white-space: nowrap; }
-.rm-ic { top: calc(12 * var(--ru)); width: calc(34 * var(--ru)); height: calc(30 * var(--ru)); background: #fff; border-radius: calc(6 * var(--ru)); }
-.rm-ic.i1 { left: calc(594 * var(--ru)); border-radius: calc(4 * var(--ru)) calc(14 * var(--ru)) calc(14 * var(--ru)) calc(4 * var(--ru)); }
-.rm-ic.i2 { left: calc(654 * var(--ru)); }
-.rm-ic.i3 { left: calc(708 * var(--ru)); width: calc(6 * var(--ru)); height: calc(30 * var(--ru)); background: radial-gradient(circle, #fff 0 calc(3 * var(--ru)), transparent calc(3.5 * var(--ru))) 0 0 / 100% 33% repeat-y; }
-
-/* 功能标签 */
-.rm-chips { left: 0; right: 0; top: calc(162 * var(--ru)); height: calc(36 * var(--ru)); }
-.rm-chips span { top: 0; height: calc(34 * var(--ru)); line-height: calc(34 * var(--ru)); padding: 0 calc(16 * var(--ru)); border-radius: calc(17 * var(--ru)); background: rgba(255, 255, 255, .13); border: 1px solid rgba(255, 255, 255, .12); font-size: calc(18 * var(--ru)); white-space: nowrap; }
-.rm-chips span:nth-child(1) { left: calc(23 * var(--ru)); background: linear-gradient(180deg, #2f6b2f, #1f4a22); font-weight: 800; padding-left: calc(46 * var(--ru)); }
-.rm-chips span.g i { position: absolute; left: calc(8 * var(--ru)); top: calc(4 * var(--ru)); width: calc(26 * var(--ru)); height: calc(26 * var(--ru)); border-radius: 50%; background: #8fe063; }
-.rm-chips span:nth-child(2) { left: calc(148 * var(--ru)); }
-.rm-chips span:nth-child(3) { left: calc(220 * var(--ru)); }
-.rm-chips span.r1 { left: calc(556 * var(--ru)); }
-.rm-chips span.r2 { left: calc(670 * var(--ru)); padding: 0 calc(14 * var(--ru)); }
-
-/* 麦位 */
-.rm-seats { left: 0; right: 0; top: calc(238 * var(--ru)); height: calc(72 * var(--ru)); }
-.rm-seats i { top: 0; width: calc(70 * var(--ru)); height: calc(70 * var(--ru)); border-radius: 50%; border: calc(2.5 * var(--ru)) solid rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .06); }
-.rm-seats i::after { content: ""; position: absolute; left: 50%; top: 50%; width: calc(26 * var(--ru)); height: calc(20 * var(--ru)); margin: calc(-8 * var(--ru)) 0 0 calc(-13 * var(--ru)); border-radius: calc(7 * var(--ru)) calc(7 * var(--ru)) calc(4 * var(--ru)) calc(4 * var(--ru)); background: rgba(255, 255, 255, .85); }
-.rm-seats i.host { background: radial-gradient(circle at 40% 35%, #ffd9a0, #f0833a); border-color: #fff; }
-.rm-seats i.host::after { display: none; }
-.rm-seats i:nth-child(1) { left: calc(28 * var(--ru)); } .rm-seats i:nth-child(2) { left: calc(116 * var(--ru)); }
-.rm-seats i:nth-child(3) { left: calc(204 * var(--ru)); } .rm-seats i:nth-child(4) { left: calc(292 * var(--ru)); }
-.rm-seats i:nth-child(5) { left: calc(379 * var(--ru)); } .rm-seats i:nth-child(6) { left: calc(467 * var(--ru)); }
-.rm-seats i:nth-child(7) { left: calc(555 * var(--ru)); } .rm-seats i:nth-child(8) { left: calc(643 * var(--ru)); }
-
-/* 麦位下面的工具图标 */
-.rm-tools { left: 0; right: 0; top: calc(332 * var(--ru)); height: calc(66 * var(--ru)); }
-.rm-tools i { top: 0; width: calc(64 * var(--ru)); height: calc(64 * var(--ru)); border-radius: 50%; border: calc(2.5 * var(--ru)) solid rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .06); font-style: normal; text-align: center; line-height: calc(60 * var(--ru)); font-size: calc(28 * var(--ru)); }
-.rm-tools i:nth-child(1) { left: calc(466 * var(--ru)); } .rm-tools i:nth-child(2) { left: calc(556 * var(--ru)); } .rm-tools i:nth-child(3) { left: calc(646 * var(--ru)); }
-
-/* 底部操作栏 */
-.rm-bottom i { top: calc(22 * var(--ru)); width: calc(56 * var(--ru)); height: calc(56 * var(--ru)); border-radius: 50%; background: rgba(255, 255, 255, .14); }
-.rm-bottom i.b1 { left: calc(30 * var(--ru)); } .rm-bottom i.b2 { left: calc(112 * var(--ru)); background: rgba(255, 255, 255, .85); }
-.rm-bottom .sel { left: calc(413 * var(--ru)); top: calc(18 * var(--ru)); width: calc(60 * var(--ru)); height: calc(60 * var(--ru)); border-radius: 50%; background: #f6d94a; color: #1a1a1a; text-align: center; line-height: calc(60 * var(--ru)); font-size: calc(19 * var(--ru)); font-weight: 800; position: absolute; }
-.rm-bottom i.b3 { left: calc(498 * var(--ru)); background: rgba(255, 255, 255, .85); } .rm-bottom i.b4 { left: calc(575 * var(--ru)); }
-.rm-bottom i.b5 { left: calc(654 * var(--ru)); border-radius: calc(14 * var(--ru)); background: linear-gradient(180deg, #ff7a8a, #e0405a); }
 </style>
 </head>
 <body>
-<!-- 手机界面（红框）：互动房壳 + 游戏 -->
-<div class="phone" id="phone" aria-label="手机界面">
-  <iframe src="game.html?v=mw7kbs5h" title="节节高"></iframe>
-
-  <div class="room-top"><div class="rm rm-top">
-    <div class="rm-status"><b>14:47</b><span class="rm-sys"><i class="rm-sig"></i><i class="rm-wifi"></i><em>73</em></span></div>
-    <div class="rm-nav">
-      <span class="rm-back">‹</span>
-      <div class="rm-title"><b><i class="rm-lock"></i>哈哈哈哈哈</b><small>热度: 10 · 房间号: 10369660</small></div>
-      <span class="rm-play">趣味玩法 ▾</span>
-      <i class="rm-ic i1"></i><i class="rm-ic i2"></i><i class="rm-ic i3"></i>
-    </div>
-    <div class="rm-chips">
-      <span class="g"><i></i>找人玩</span><span>公告</span><span>选择音乐</span>
-      <span class="r1">虚位以待 ›</span><span class="r2">●1</span>
-    </div>
-    <div class="rm-seats"><i class="host"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-  </div></div>
-
-  <div class="room-bottom"><div class="rm rm-bottom">
-    <i class="b1"></i><i class="b2"></i>
-    <span class="sel">选择</span>
-    <i class="b3"></i><i class="b4"></i><i class="b5"></i>
-  </div></div>
+<div class="phone" id="phone" aria-label="节节高">
+  <iframe src="game.html?v=lite1" title="节节高"></iframe>
 </div>
-
-<script>
-// 游戏页会把当前界面最上 / 最下的底色发过来，顶部 / 底部组件的底色按它渐变
-(() => {
-  const RGB = /^\d{1,3},\s*\d{1,3},\s*\d{1,3}$/;
-  const frame = () => document.querySelector(".phone iframe");
-  const phone = () => document.getElementById("phone");
-  window.addEventListener("message", (e) => {
-    const iframe = frame();
-    // 只接受同源游戏 iframe；拒绝其它窗口 / 跨域消息
-    if (!iframe || e.source !== iframe.contentWindow) return;
-    if (e.origin !== window.location.origin) return;
-    const d = e.data;
-    if (!d || typeof d !== "object" || Array.isArray(d) || d.type !== "jjg-edge") return;
-    const p = phone();
-    if (!p) return;
-    if (typeof d.top === "string" && RGB.test(d.top)) p.style.setProperty("--rt", d.top);
-    if (typeof d.bottom === "string" && RGB.test(d.bottom)) p.style.setProperty("--rb", d.bottom);
-    if (typeof d.ext === "number" && Number.isFinite(d.ext)) {
-      p.style.setProperty("--rx", String(Math.max(0, Math.min(120, d.ext | 0))));
-    }
-  });
-})();
-</script>
 </body>
 </html>

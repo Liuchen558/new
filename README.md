@@ -1,15 +1,14 @@
 # 节节高
 
-Original Claude artifact, restored byte-for-byte from the artifact CDN:
+手机竖屏休闲小游戏静态包（Vite 本地预览）。
 
-https://claude.ai/artifact/Ky6sFgmwkpWBZetBtJYT2P
+- `static-game/index.html` — 手机壳（已去掉互动房顶栏 / 底栏）
+- `static-game/game.html` — 游戏页（已去掉首屏 loading、内嵌字体）
+- `static-game/assets/main.js` — 游戏逻辑
+- `static-game/art/` — 已压缩的美术资源
+- `exports/jie-jie-gao-source.zip` — 可下载源码包（约 3.6MB）
 
-- `static-game/index.html` — original 互动房 demo shell (phone frame + top/bottom room chrome)
-- `static-game/game.html` — original game page (`节节高 · 试玩`)
-- `static-game/assets/main.js` — original bundle
-- `static-game/art/` — original art assets
-
-Only Claude’s sandbox `frame-runtime` injection was removed so it can run outside claude.ai. Author HTML/CSS/JS/art are unchanged.
+公开试玩：https://liuchen558.github.io/new/
 
 ## Run
 
@@ -19,8 +18,3 @@ npm run dev
 ```
 
 Open http://127.0.0.1:4729
-
-```bash
-npm run build
-npm run preview
-```
