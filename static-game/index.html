@@ -170,12 +170,17 @@ body {
 <script>
 // 游戏页会把当前界面最上 / 最下的底色发过来，顶部 / 底部组件的底色按它渐变
 window.addEventListener("message", (e) => {
+  const frame = document.querySelector(".phone iframe");
+  // 只接受本页游戏 iframe 发来的消息，忽略其它来源
+  if (!frame || e.source !== frame.contentWindow) return;
+  if (e.origin !== window.location.origin) return;
   const d = e.data;
-  if (!d || d.type !== "jjg-edge") return;
+  if (!d || typeof d !== "object" || d.type !== "jjg-edge") return;
   const p = document.getElementById("phone");
-  p.style.setProperty("--rt", d.top);
-  p.style.setProperty("--rb", d.bottom);
-  p.style.setProperty("--rx", d.ext || 0);
+  if (!p) return;
+  if (typeof d.top === "string") p.style.setProperty("--rt", d.top);
+  if (typeof d.bottom === "string") p.style.setProperty("--rb", d.bottom);
+  if (typeof d.ext === "number") p.style.setProperty("--rx", String(d.ext));
 });
 </script>
 </body>
