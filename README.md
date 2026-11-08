@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:4729 — desktop shows a phone-sized frame (390×844); on a real phone it goes full screen.
+Open http://127.0.0.1:4729 — the page is an **互动房** shell (top seats / bottom chat) wrapping the original game; on a real phone it goes full screen.
 
 ```bash
 npm run build
@@ -20,7 +20,7 @@ npm run preview
 
 ## Contents
 
-- `static-game/index.html` — phone frame shell
+- `static-game/index.html` — interactive-room host chrome (covers the game’s top/bottom safe insets)
 - `static-game/game.html` — original artifact HTML (unchanged game)
 - `static-game/assets/main.js` + `art/` — original bundle and sprites
 - Vite is only used as a static file server / bundler for hosting
