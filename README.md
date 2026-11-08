@@ -1,8 +1,15 @@
-# 节节高 · 手速擂台
+# 节节高
 
-Original Claude artifact game, packaged to run locally.
+Original Claude artifact, restored byte-for-byte from the artifact CDN:
 
-Tap the left or right half of the screen to chop bamboo. Avoid branches, race the AI, climb your score — 节节高.
+https://claude.ai/artifact/Ky6sFgmwkpWBZetBtJYT2P
+
+- `static-game/index.html` — original 互动房 demo shell (phone frame + top/bottom room chrome)
+- `static-game/game.html` — original game page (`节节高 · 试玩`)
+- `static-game/assets/main.js` — original bundle
+- `static-game/art/` — original art assets
+
+Only Claude’s sandbox `frame-runtime` injection was removed so it can run outside claude.ai. Author HTML/CSS/JS/art are unchanged.
 
 ## Run
 
@@ -11,18 +18,9 @@ npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:4729 — the page is an **互动房** shell (top seats / bottom chat) wrapping the original game; on a real phone it goes full screen.
+Open http://127.0.0.1:4729
 
 ```bash
 npm run build
 npm run preview
 ```
-
-## Contents
-
-- `static-game/index.html` — interactive-room host chrome (covers the game’s top/bottom safe insets)
-- `static-game/game.html` — original artifact HTML (unchanged game)
-- `static-game/assets/main.js` + `art/` — original bundle and sprites
-- Vite is only used as a static file server / bundler for hosting
-
-Source artifact: https://claude.ai/artifact/Ky6sFgmwkpWBZetBtJYT2P
