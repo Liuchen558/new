@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:4729
+Open http://127.0.0.1:4729 — desktop shows a phone-sized frame (390×844); on a real phone it goes full screen.
 
 ```bash
 npm run build
@@ -20,7 +20,9 @@ npm run preview
 
 ## Contents
 
-- `static-game/` — original `index.html`, `assets/main.js`, and `art/` sprites from the Claude artifact
+- `static-game/index.html` — phone frame shell
+- `static-game/game.html` — original artifact HTML (unchanged game)
+- `static-game/assets/main.js` + `art/` — original bundle and sprites
 - Vite is only used as a static file server / bundler for hosting
 
 Source artifact: https://claude.ai/artifact/Ky6sFgmwkpWBZetBtJYT2P

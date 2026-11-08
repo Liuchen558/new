@@ -19,5 +19,11 @@ export default defineConfig({
   build: {
     outDir: path.resolve(rootDir, 'dist'),
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: path.resolve(rootDir, 'static-game/index.html'),
+        game: path.resolve(rootDir, 'static-game/game.html'),
+      },
+    },
   },
 })
