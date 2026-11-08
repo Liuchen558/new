@@ -9,7 +9,8 @@
 <title>节节高</title>
 <style>
 /*
-  红框范围 = 整块手机界面（.phone）
+  手机界面（.phone）= 游戏整屏
+  尺寸按游戏设计稿 750×1624（art/bg），在视口内尽量铺满并保持比例
   内含：互动房顶栏 + 游戏 iframe + 互动房底栏
 */
 html, body {
@@ -25,14 +26,16 @@ body {
   place-items: center;
 }
 
-/* 手机界面：固定 9:16，完整装下红框内容 */
+/* 设计稿宽高比 750:1624 —— 用这个比例，游戏 UI 才能横向铺满 */
 .phone {
+  --pw: 750;
+  --ph: 1624;
   position: relative;
   flex: none;
-  width: min(100vw, calc(100vh * 9 / 16));
-  height: min(100vh, calc(100vw * 16 / 9));
-  width: min(100vw, calc(100dvh * 9 / 16));
-  height: min(100dvh, calc(100vw * 16 / 9));
+  width: min(100vw, calc(100vh * var(--pw) / var(--ph)));
+  height: min(100vh, calc(100vw * var(--ph) / var(--pw)));
+  width: min(100vw, calc(100dvh * var(--pw) / var(--ph)));
+  height: min(100dvh, calc(100vw * var(--ph) / var(--pw)));
   container-type: inline-size;
   background: #1d3a2c;
   overflow: hidden;
@@ -47,8 +50,8 @@ body {
   background: #1d3a2c;
 }
 
-/* 真机竖屏：手机界面铺满屏幕 */
-@media (max-width: 480px) and (orientation: portrait) {
+/* 视口已接近设计稿比例时，直接铺满（常见真机） */
+@media (max-aspect-ratio: 750/1624) and (orientation: portrait) {
   html, body { background: #1d3a2c; }
   .phone {
     width: 100vw;
